@@ -52,18 +52,48 @@ void Game::update(float dt)
 	if (bird.getGlobalBounds().left > window.getSize().x - bird.getGlobalBounds().width || bird.getGlobalBounds().left < 0) {
 		is_reversed = !is_reversed;
 	}
-	if (is_reversed == false) {
-		bird.move(1.0f * speed * dt, 0);
-		bird.setTextureRect(sf::IntRect(
-			0, 0, bird.getLocalBounds().width, bird.getLocalBounds().height));
+	if (
+		bird.getPosition().y >
+		(window.getSize().y - bird.getGlobalBounds().height) ||
+		bird.getPosition().y < 0)
+	{
+		is_reversed_Y = !is_reversed_Y;
 	}
-	else {
+	if (is_reversed == true && is_reversed_Y == true)
+	{
 		bird.setTextureRect(sf::IntRect(
 			bird.getLocalBounds().width,
 			0,
 			-bird.getLocalBounds().width,
 			bird.getLocalBounds().height));
-		bird.move(-1.0f * speed * dt, 0);
+		bird.move(-1.0f * speed * dt, -1.0f * speed * dt);
+	}
+	else if (is_reversed == true && is_reversed_Y == false)
+	{
+		bird.setTextureRect(sf::IntRect(
+			bird.getLocalBounds().width,
+			0,
+			-bird.getLocalBounds().width,
+			bird.getLocalBounds().height));
+		bird.move(-1.0f * speed * dt, 1.0f * speed * dt);
+	}
+	else if (is_reversed == false && is_reversed_Y == true)
+	{
+		bird.setTextureRect(sf::IntRect(
+			0,
+			0,
+			bird.getLocalBounds().width,
+			bird.getLocalBounds().height));
+		bird.move(1.0f * speed * dt, -1.0f * speed * dt);
+	}
+	else
+	{
+		bird.setTextureRect(sf::IntRect(
+			0,
+			0,
+			bird.getLocalBounds().width,
+			bird.getLocalBounds().height));
+		bird.move(1.0f * speed * dt, 1.0f * speed * dt);
 	}
 }
 

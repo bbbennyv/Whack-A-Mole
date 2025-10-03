@@ -34,6 +34,7 @@ class Game
 
   bool in_menu = true;
   bool is_reversed = false;
+  bool is_reversed_Y = false;
   float speed = 200;
   int score = 0;
 };
