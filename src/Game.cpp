@@ -10,6 +10,10 @@ Game::Game(sf::RenderWindow& game_window)
 
 Game::~Game()
 {
+	delete[] animals;
+	delete[] passports;
+	delete character;
+	delete passport;
 
 }
 
@@ -43,6 +47,18 @@ bool Game::init()
 	score_text.setPosition(10, 10);
 	score_text.setColor(sf::Color::Blue);
 	score_text.setString(std::to_string(score));
+
+
+	character = new sf::Sprite;
+	passport = new sf::Sprite;
+
+
+	//animalSprite(2);
+	newAnimal();
+	passportSprite(1);
+
+
+
 
   return true;
 }
@@ -95,6 +111,10 @@ void Game::update(float dt)
 			bird.getLocalBounds().height));
 		bird.move(1.0f * speed * dt, 1.0f * speed * dt);
 	}
+
+	dragSprite(dragged);
+
+
 }
 
 void Game::render()
@@ -111,18 +131,36 @@ void Game::render()
 		window.draw(background);
 		window.draw(bird);
 		window.draw(score_text);
+		window.draw(*character);
+		window.draw(*passport);
+
 	}
 }
 
-void Game::mouseClicked(sf::Event event)
+void Game::mouseButtonPressed(sf::Event event)
 {
   //get the click position
-  sf::Vector2i click = sf::Mouse::getPosition(window);
-  if (CollisionChecker(click, bird)){
+	if (event.mouseButton.button == sf::Mouse::Left)
+	{
+		sf::Vector2i click = sf::Mouse::getPosition(window);
+		sf::Vector2f clickf = static_cast<sf::Vector2f>(click);
+		if (passport->getGlobalBounds().contains(clickf)) 
+		{
+			dragged = passport;
+		}
+	}
+  /*if (CollisionChecker(click, bird)){
 	  spawn();
 	  score++;
 	  score_text.setString(std::to_string(score));
-  }
+  }*/
+
+}
+
+void Game::mouseButtonReleased(sf::Event event)
+{
+	dragged = nullptr;
+
 
 }
 
@@ -152,6 +190,103 @@ void Game::spawn()
 	int x = rand() % (window.getSize().x - (int)bird.getGlobalBounds().width);
 	int y = rand() % (window.getSize().y - (int)bird.getGlobalBounds().height);
 	bird.setPosition(x, y);
+
+}
+
+bool Game::animalSprite(int animal_index)
+{
+	if (animal_index == 0) {
+		if (!animals[0].loadFromFile("../Data/Images/kenney_animalpackredux/PNG/Square/gorilla.png"))
+		{
+			std::cout << "Error";
+		}
+	}
+	else if (animal_index == 1) {
+		if (!animals[1].loadFromFile("../Data/Images/kenney_animalpackredux/PNG/Square/penguin.png"))
+		{
+			std::cout << "Error";
+		}
+	}
+	else if (animal_index == 2) {
+		if (!animals[2].loadFromFile("../Data/Images/kenney_animalpackredux/PNG/Square/pig.png"))
+		{
+			std::cout << "Error";
+		}
+	}
+	character->setTexture(animals[animal_index]);
+	return true;
+}
+
+bool Game::passportSprite(int passport_index)
+{
+	if (passport_index == 0) {
+		if (!passports[0].loadFromFile("../Data/Images/kenney_animalpackredux/PNG/Square/gorilla.png")) 
+		{
+			std::cout << "Error";
+		}
+	}
+	else if (passport_index == 1) {
+		if (!passports[1].loadFromFile("../Data/Images/kenney_animalpackredux/PNG/Square/penguin.png"))
+		{
+			std::cout << "Error";
+		}
+	}
+	else if (passport_index == 2) {
+		if (!passports[2].loadFromFile("../Data/Images/kenney_animalpackredux/PNG/Square/pig.png"))
+		{
+			std::cout << "Error";
+		}
+	}
+	passport->setTexture(passports[passport_index]);
+	
+	return true;
+}
+
+void Game::newAnimal()
+{
+	passport_accept = false;
+	passport_reject = false;
+
+	int animal_index_temp = rand() % 3;
+	int passport_index_temp = rand() % 3;
+
+	if (animal_index_temp == passport_index_temp) 
+	{
+		should_accept = true;
+	}
+	else 
+	{
+		should_accept = false;
+	}
+
+
+
+
+
+	animalSprite(animal_index_temp);
+	character->setScale(1.8, 1.8);
+	character->setPosition(window.getSize().x / 12, window.getSize().y / 12);
+
+	passportSprite(passport_index_temp);
+	passport->setScale(0.6,0.6);
+	passport->setPosition(window.getSize().x / 2, window.getSize().y / 3);
+
+
+
+}
+
+void Game::dragSprite(sf::Sprite* sprite)
+{
+	if (sprite != nullptr) 
+	{
+		sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+		sf::Vector2f mouse_posf = static_cast<sf::Vector2f>(mouse_pos);
+
+
+		sf::Vector2f drag_position = mouse_posf - drag_offset;
+		sprite->setPosition(drag_position);
+	}
+
 
 }
 
