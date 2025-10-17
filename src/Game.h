@@ -34,11 +34,21 @@ class Game
 
   sf::Sprite* character;
   sf::Sprite* passport;
+  sf::Sprite accept_button;
+  sf::Sprite reject_button;
+  sf::Sprite accept_stamp;
+  sf::Sprite reject_stamp;
 
   sf::Sprite* dragged = nullptr;
   
   sf::Texture* animals = new sf::Texture[3];
   sf::Texture* passports = new sf::Texture[3];
+  sf::Texture accept_button_texture;
+  sf::Texture reject_button_texture;
+  sf::Texture accept_stamp_texture;
+  sf::Texture reject_stamp_texture;
+  
+
 
 
 
@@ -48,7 +58,7 @@ class Game
   sf::Text play_text;
   sf::Text score_text;
 
-  sf::Vector2f drag_offset = sf::Vector2f(50.0f, 50.f);
+  sf::Vector2f drag_offset = sf::Vector2f(125.0f,150.f);
   
   bool in_menu = true;
   bool is_reversed = false;
@@ -56,11 +66,18 @@ class Game
   float speed = 200;
   int score = 0;
 
+  float moved_pass_x = 0;
+  float moved_pass_y = 0;
+
 
   bool passport_accept = false;
   bool passport_reject = false;
   bool should_accept = false;
 
+  bool buttons_visible = false;
+  bool accept_stamp_visible = false;
+  bool reject_stamp_visible = false;
+  bool stamped = false;
 
 };
 
