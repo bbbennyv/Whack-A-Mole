@@ -15,7 +15,8 @@ class Game
   void mouseButtonPressed(sf::Event event);
   void mouseButtonReleased(sf::Event event);
   void keyPressed(sf::Event event);
-  bool CollisionChecker(sf::Vector2i clcik,sf::Sprite sprite);
+  bool CollisionChecker(sf::Vector2i clcik,sf::Sprite sprite);  
+  bool CollisionBoxChecker(sf::Sprite sprite1, sf::Sprite sprite2);
   void spawn();
   bool animalSprite(int animal_index);
   bool passportSprite(int passport_index);
@@ -78,7 +79,7 @@ class Game
   bool accept_stamp_visible = false;
   bool reject_stamp_visible = false;
   bool stamped = false;
-
+  bool won = false;
 };
 
 #endif // PLATFORMER_GAME_H

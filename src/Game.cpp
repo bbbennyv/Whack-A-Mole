@@ -102,8 +102,13 @@ void Game::update(float dt)
 
 
 	dragSprite(dragged);
-	if(moved_pass_x == )
-
+	//if(moved_pass_x == )
+	if (CollisionBoxChecker(*character, *passport) && stamped == true && dragged == NULL) 
+	{
+		std::cout << std::to_string(won);
+		newAnimal();
+		
+	}
 }
 
 void Game::render()
@@ -155,16 +160,16 @@ void Game::mouseButtonPressed(sf::Event event)
 			passport_accept = true;
 			if (should_accept == passport_accept) 
 			{
-				std::cout << "WIJ";
 				accept_stamp_visible = true;
 				reject_stamp_visible = false;
 				stamped = true;
+				won = true;
 			}
 			else 
 			{
-				std::cout << "loss"; 
 				accept_stamp_visible = true;
 				stamped = true;
+				won = false;
 				reject_stamp_visible = false;
 			}
 			accept_button.setColor(sf::Color{ 55, 55, 55, 185 });
@@ -177,17 +182,17 @@ void Game::mouseButtonPressed(sf::Event event)
 			passport_reject = true;
 			if (should_accept == passport_reject ) 
 			{
-				std::cout << "LOSSS";
 				reject_stamp.setPosition(500, 70);
 				reject_stamp_visible = true;
 				stamped = true;
+				won = false;
 				accept_stamp_visible = false;
 			}
 			else 
 			{
-				std::cout << "Win"; 
 				reject_stamp_visible = true;
 				stamped = true;
+				won = true;
 				accept_stamp_visible = false;
 			}
 			accept_button.setColor(sf::Color::White);
@@ -233,6 +238,22 @@ bool Game::CollisionChecker(sf::Vector2i click, sf::Sprite sprite)
 		return false;
 	}
 }
+
+
+bool Game::CollisionBoxChecker(sf::Sprite sprite1, sf::Sprite sprite2)
+{
+	if (sprite1.getGlobalBounds().left > sprite2.getGlobalBounds().left  &&
+		sprite1.getGlobalBounds().left < sprite2.getGlobalBounds().left + sprite2.getGlobalBounds().width &&
+		sprite1.getGlobalBounds().top > sprite2.getGlobalBounds().top &&
+		sprite1.getGlobalBounds().top < sprite2.getGlobalBounds().top + sprite2.getGlobalBounds().height) {
+
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 
 void Game::spawn() 
 {
@@ -302,13 +323,10 @@ void Game::newAnimal()
 	if (animal_index_temp == passport_index_temp) 
 	{
 		should_accept = true;
-		std::cout << animal_index_temp;
-		std::cout << passport_index_temp;
 	}
 	else 
 	{
 		should_accept = false; std::cout << animal_index_temp;
-		std::cout << passport_index_temp;
 	}
 
 
@@ -316,14 +334,12 @@ void Game::newAnimal()
 
 
 	animalSprite(animal_index_temp);
-	character->setScale(1.8, 1.8);
+	character->setScale(1, 1);
 	character->setPosition(window.getSize().x / 12, window.getSize().y / 12);
 
 	passportSprite(passport_index_temp);
 	passport->setScale(0.6,0.6);
-	passport->setPosition(window.getSize().x / 2, window.getSize().y / 3);
-
-
+	passport->setPosition(200, 200);
 
 }
 
