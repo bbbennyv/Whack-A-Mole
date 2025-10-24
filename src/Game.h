@@ -59,6 +59,7 @@ class Game
   Text title_text;
   Text play_text;
   Text score_text;
+  Text lives_text;
 
   sf::Vector2f drag_offset = sf::Vector2f(125.0f,150.f);
   

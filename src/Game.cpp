@@ -33,6 +33,9 @@ bool Game::init()
 	score_text.setPosition(10, 10);
 	score_text.setColour(sf::Color::Blue);
 	score_text.init(std::to_string(score),40);
+	lives_text.init("5", 40);
+	lives_text.setPosition(800, 10);
+	lives_text.setColour(sf::Color::Blue);
 
 
 	if (!accept_button_texture.loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/accept button.png")) 
@@ -99,12 +102,15 @@ void Game::update(float dt)
 		{
 			score += 1000;
 			score_text.getText().setString(std::to_string(score));
+
 		}
 		else 
 		{
 			score -= 1000;
 			lives -= 1;
 			score_text.getText().setString(std::to_string(score));
+			lives_text .getText().setString(std::to_string(lives));
+
 
 		}
 		newAnimal();
