@@ -38,3 +38,8 @@ sf::Text Text::getText()
 	return textitem;
 }
 
+void Text::setText(sf::String text)
+{
+	textitem.setString(text);
+}
+

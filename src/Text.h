@@ -12,6 +12,7 @@ public:
 	void setPosition(int pos_x,int pos_y);
 	void setColour(sf::Color colour);
 	sf::Text getText();
+	void setText(sf::String text);
 
 
 	sf::Text textitem;

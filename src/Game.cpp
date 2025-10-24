@@ -1,6 +1,8 @@
 
 #include "Game.h"
 #include <iostream>
+#include <vector>
+
 
 Game::Game(sf::RenderWindow& game_window)
   : window(game_window)
@@ -32,11 +34,17 @@ bool Game::init()
 	play_text.setColour(sf::Color::Cyan);
 	score_text.setPosition(10, 10);
 	score_text.setColour(sf::Color::Blue);
-	score_text.init(std::to_string(score),40);
-	lives_text.init("5", 40);
+	score_text.init("Score| " +std::to_string(score), 40);
+	lives_text.init("Lives| 5", 40);
 	lives_text.setPosition(800, 10);
 	lives_text.setColour(sf::Color::Blue);
 
+	end_screen_text.init("         YOU DIED\n\nYour final score is\n             " + std::to_string(score),40);
+	end_screen_text.setColour(sf::Color::Red);
+	end_screen_text.setPosition(350,150);
+	timer_text.init("31", 40);
+	timer_text.setColour(sf::Color::Black);
+	timer_text.setPosition(300, 10);
 
 	if (!accept_button_texture.loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/accept button.png")) 
 	{
@@ -95,32 +103,54 @@ void Game::update(float dt)
 
 
 	dragSprite(dragged);
-	//if(moved_pass_x == )
 	if (CollisionBoxChecker(*character, *passport) && stamped == true && dragged == NULL) 
 	{
 		if (won) 
 		{
 			score += 1000;
-			score_text.getText().setString(std::to_string(score));
+			score_text.setText("Score| " + std::to_string(score));
 
 		}
 		else 
 		{
 			score -= 1000;
-			lives -= 1;
-			score_text.getText().setString(std::to_string(score));
-			lives_text .getText().setString(std::to_string(lives));
+			lives--;;
+			score_text.setText("Score| " + std::to_string(score));
+			lives_text.setText("Lives| " + std::to_string(lives));
 
 
 		}
 		newAnimal();
 		
 	}
+
+	if (lives < 0)
+	{
+		end_screen_text.setText("         YOU DIED\n\nYour final score is\n             " + std::to_string(score));
+
+		is_dead = true;
+	}
+
+	float elapsed = timer.getElapsedTime().asSeconds();
+	float remaining = countdownTime - elapsed;
+	if (remaining < 0) {
+		remaining = 0;
+		is_dead = true;
+		end_screen_text.setText("         SHIFT OVER\n\nYour final score is\n             " + std::to_string(score));
+	}
+
+
+	timer_text.setText(std::to_string(static_cast<int>(remaining)));
 }
 
 void Game::render()
 {
-	if (in_menu == true) 
+	if (is_dead == true && in_menu == false) 
+	{
+		window.clear();
+		window.draw(end_screen_text.getText());
+	}
+	else if (in_menu == true && is_dead == false) 
 	{
 		window.clear();
 		window.draw(title_text.getText());
@@ -131,6 +161,8 @@ void Game::render()
 		window.clear();
 		window.draw(background);
 		window.draw(score_text.getText());
+		window.draw(lives_text.getText());
+		window.draw(timer_text.getText());
 		window.draw(*character);
 		window.draw(*passport);
 		if (buttons_visible == true) 
@@ -228,6 +260,7 @@ void Game::keyPressed(sf::Event event)
 {
 	if (event.key.code == sf::Keyboard::Enter) {
 		in_menu = false;
+		timer.restart();
 	}
 }
 
@@ -261,13 +294,6 @@ bool Game::CollisionBoxChecker(sf::Sprite sprite1, sf::Sprite sprite2)
 }
 
 
-void Game::spawn() 
-{
-	int x = rand() % (window.getSize().x - (int)bird.getGlobalBounds().width);
-	int y = rand() % (window.getSize().y - (int)bird.getGlobalBounds().height);
-	bird.setPosition(x, y);
-
-}
 
 bool Game::animalSprite(int animal_index)
 {
@@ -332,7 +358,7 @@ void Game::newAnimal()
 	}
 	else 
 	{
-		should_accept = false; std::cout << animal_index_temp;
+		should_accept = false;
 	}
 
 

@@ -18,7 +18,6 @@ class Game
   void keyPressed(sf::Event event);
   bool CollisionChecker(sf::Vector2i clcik,sf::Sprite sprite);  
   bool CollisionBoxChecker(sf::Sprite sprite1, sf::Sprite sprite2);
-  void spawn();
   bool animalSprite(int animal_index);
   bool passportSprite(int passport_index);
   void newAnimal();
@@ -27,12 +26,8 @@ class Game
 
  private:
   sf::RenderWindow& window;
-  sf::Sprite ball;
-  sf::Texture ball_texture;
   sf::Sprite background;
   sf::Texture background_texture;
-  sf::Sprite bird;
-  sf::Texture bird_texture;
 
   sf::Sprite* character;
   sf::Sprite* passport;
@@ -52,21 +47,24 @@ class Game
   
 
 
+  sf::Clock timer;
 
 
-
-  sf::Font normal_font;
   Text title_text;
   Text play_text;
   Text score_text;
   Text lives_text;
+  Text end_screen_text;
+  Text timer_text;
 
   sf::Vector2f drag_offset = sf::Vector2f(125.0f,150.f);
   
   bool in_menu = true;
 
   int score = 0;
-  int lives = 5;
+  int lives = 0; 
+  
+  const float countdownTime = 31.0f;
 
   float moved_pass_x = 0;
   float moved_pass_y = 0;
@@ -81,6 +79,7 @@ class Game
   bool reject_stamp_visible = false;
   bool stamped = false;
   bool won = false;
+  bool is_dead = false;
 };
 
 #endif // PLATFORMER_GAME_H
