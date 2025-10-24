@@ -3,6 +3,7 @@
 #define PLATFORMER_GAME_H
 
 #include <SFML/Graphics.hpp>
+#include "Text.h"
 
 class Game
 {
@@ -55,17 +56,16 @@ class Game
 
 
   sf::Font normal_font;
-  sf::Text title_text;
-  sf::Text play_text;
-  sf::Text score_text;
+  Text title_text;
+  Text play_text;
+  Text score_text;
 
   sf::Vector2f drag_offset = sf::Vector2f(125.0f,150.f);
   
   bool in_menu = true;
-  bool is_reversed = false;
-  bool is_reversed_Y = false;
-  float speed = 200;
+
   int score = 0;
+  int lives = 5;
 
   float moved_pass_x = 0;
   float moved_pass_y = 0;

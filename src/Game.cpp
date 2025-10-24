@@ -23,30 +23,16 @@ bool Game::init()
 		std::cout << "NO BACKGROUND";
 	}
 	background.setTexture(background_texture);
-	if (!bird_texture.loadFromFile("../Data/WhackaMole Worksheet/bird.png")) {
-		std::cout << "NO BIRD";
-	}
-	bird.setTexture(bird_texture);
-	bird.setPosition(200, 100);
-	bird.setScale(0.5, 0.5);
-	if (!normal_font.loadFromFile("../Data/Fonts/OpenSans-Bold.ttf")) {
-		std::cout << "NO FONT";
-	}
-	title_text.setString("WHACK A MOLEE");
-	title_text.setFont(normal_font);
-	title_text.setColor(sf::Color::Cyan);
-	title_text.setPosition(window.getSize().x / 2 - title_text.getGlobalBounds().width / 2,
+	title_text.init("WHACK A MOLEE", 20);
+	title_text.setColour(sf::Color::Cyan);
+	title_text.setPosition(window.getSize().x / 2 - title_text.getText().getGlobalBounds().width / 2,
 		20);
-	title_text.setCharacterSize(20);
-	play_text.setFont(normal_font);
-	play_text.setString("Press Enter to Start");
-	play_text.setCharacterSize(20);
+	play_text.init("Press Enter to Start",30);
 	play_text.setPosition(100, 200);
-	play_text.setColor(sf::Color::Cyan);
-	score_text.setFont(normal_font);
+	play_text.setColour(sf::Color::Cyan);
 	score_text.setPosition(10, 10);
-	score_text.setColor(sf::Color::Blue);
-	score_text.setString(std::to_string(score));
+	score_text.setColour(sf::Color::Blue);
+	score_text.init(std::to_string(score),40);
 
 
 	if (!accept_button_texture.loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/accept button.png")) 
@@ -96,16 +82,31 @@ bool Game::init()
 void Game::update(float dt)
 {
 	
+	if (reject_stamp_visible == true) {
+		reject_stamp.setPosition(passport->getGlobalBounds().left, passport->getPosition().y);
 
-	reject_stamp.setPosition(passport->getGlobalBounds().left, passport->getPosition().y);
-	accept_stamp.setPosition(passport->getGlobalBounds().left, passport->getPosition().y);
+	}
+	if (accept_stamp_visible == true) {
+		accept_stamp.setPosition(passport->getGlobalBounds().left, passport->getPosition().y);
+	}
 
 
 	dragSprite(dragged);
 	//if(moved_pass_x == )
 	if (CollisionBoxChecker(*character, *passport) && stamped == true && dragged == NULL) 
 	{
-		std::cout << std::to_string(won);
+		if (won) 
+		{
+			score += 1000;
+			score_text.getText().setString(std::to_string(score));
+		}
+		else 
+		{
+			score -= 1000;
+			lives -= 1;
+			score_text.getText().setString(std::to_string(score));
+
+		}
 		newAnimal();
 		
 	}
@@ -116,15 +117,14 @@ void Game::render()
 	if (in_menu == true) 
 	{
 		window.clear();
-		window.draw(title_text);
-		window.draw(play_text);
+		window.draw(title_text.getText());
+		window.draw(play_text.getText());
 	}
 	else
 	{
 		window.clear();
 		window.draw(background);
-		window.draw(bird);
-		window.draw(score_text);
+		window.draw(score_text.getText());
 		window.draw(*character);
 		window.draw(*passport);
 		if (buttons_visible == true) 
@@ -340,7 +340,11 @@ void Game::newAnimal()
 	passportSprite(passport_index_temp);
 	passport->setScale(0.6,0.6);
 	passport->setPosition(200, 200);
-
+	accept_stamp_visible = false;
+	reject_stamp_visible = false;
+	reject_button.setColor(sf::Color::White);
+	accept_button.setColor(sf::Color::White);
+	stamped = false;
 }
 
 void Game::dragSprite(sf::Sprite* sprite)
