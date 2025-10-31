@@ -12,8 +12,6 @@ Game::Game(sf::RenderWindow& game_window)
 
 Game::~Game()
 {
-	delete[] animals;
-	delete[] passports;
 	delete character;
 	delete passport;
 
@@ -45,6 +43,15 @@ bool Game::init()
 	timer_text.init("31", 40);
 	timer_text.setColour(sf::Color::Black);
 	timer_text.setPosition(300, 10);
+
+	restart_text.init("Restart", 40);
+	restart_text.setPosition(200,500);
+	restart_text.setColour(sf::Color::White);
+
+	quit_text.init("Quit", 40);
+	quit_text.setPosition(700, 500);
+	quit_text.setColour(sf::Color::White);
+
 
 	if (!accept_button_texture.loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/accept button.png")) 
 	{
@@ -81,11 +88,65 @@ bool Game::init()
 
 
 
-	newAnimal();
 	
 
 
+	for (int i = 0; i < 3; i++)
+	{
 
+		animals.push_back(std::make_unique<sf::Texture>());
+
+		if (i == 0)
+		{
+			if (!animals[0]->loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/moose.png"))
+			{
+				std::cout << "Error";
+			}
+		}
+		else if (i == 1)
+		{
+			if (!animals[1]->loadFromFile("../Data/Images/kenney_animalpackredux/PNG/Square/penguin.png"))
+			{
+				std::cout << "Error";
+			}
+		}
+		else if (i == 2)
+		{
+			if (!animals[2]->loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/elephant.png"))
+			{
+				std::cout << "Error";
+			}
+		}
+
+	}
+
+	for (int i = 0; i < 3; i++) 
+	{
+		passports.push_back(std::make_unique<sf::Texture>());
+		if (i == 0)
+		{
+			if (!passports[0]->loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/moose passport.png"))
+			{
+				std::cout << "Error";
+			}
+		}
+		else if (i == 1)
+		{
+			if (!passports[1]->loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/penguin passport.png"))
+			{
+				std::cout << "Error";
+			}
+		}
+		else if (i == 2)
+		{
+			if (!passports[2]->loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/elephant passport.png"))
+			{
+				std::cout << "Error";
+			}
+		}
+	}
+	
+	newAnimal();
 
   return true;
 }
@@ -109,7 +170,6 @@ void Game::update(float dt)
 		{
 			score += 1000;
 			score_text.setText("Score| " + std::to_string(score));
-
 		}
 		else 
 		{
@@ -127,6 +187,8 @@ void Game::update(float dt)
 	if (lives < 0)
 	{
 		end_screen_text.setText("         YOU DIED\n\nYour final score is\n             " + std::to_string(score));
+		end_screen_text.setColour(sf::Color::Red);
+		timer.restart();
 
 		is_dead = true;
 	}
@@ -136,7 +198,9 @@ void Game::update(float dt)
 	if (remaining < 0) {
 		remaining = 0;
 		is_dead = true;
+		timer.restart();
 		end_screen_text.setText("         SHIFT OVER\n\nYour final score is\n             " + std::to_string(score));
+		end_screen_text.setColour(sf::Color::Green);
 	}
 
 
@@ -149,6 +213,8 @@ void Game::render()
 	{
 		window.clear();
 		window.draw(end_screen_text.getText());
+		window.draw(restart_text.getText());
+		window.draw(quit_text.getText());
 	}
 	else if (in_menu == true && is_dead == false) 
 	{
@@ -261,7 +327,41 @@ void Game::keyPressed(sf::Event event)
 	if (event.key.code == sf::Keyboard::Enter) {
 		in_menu = false;
 		timer.restart();
+		if (is_dead == true) 
+		{
+			if (restart_text.getText().getString() == "<Restart>") 
+			{
+				timer.restart();
+				is_dead = false;
+				won = false;
+				score = 0;
+				lives = 5;
+				in_menu = false;
+				score_text.setText("Score| " + std::to_string(score));
+				lives_text.setText("Lives| " + std::to_string(lives));
+			}
+			if (quit_text.getText().getString() == "<Quit>") 
+			{
+				window.close();
+			}
+		}
 	}
+	if (is_dead == true) 
+	{
+		if (event.key.code == sf::Keyboard::Left) 
+		{
+			restart_text.setText("<Restart>");
+			quit_text.setText("Quit");
+		}
+
+		if (event.key.code == sf::Keyboard::Right)
+		{
+			restart_text.setText("Restart");
+			quit_text.setText("<Quit>");
+		}
+		
+	}
+
 }
 
 
@@ -295,54 +395,54 @@ bool Game::CollisionBoxChecker(sf::Sprite sprite1, sf::Sprite sprite2)
 
 
 
-bool Game::animalSprite(int animal_index)
-{
-	if (animal_index == 0) {
-		if (!animals[0].loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/moose.png"))
-		{
-			std::cout << "Error";
-		}
-	}
-	else if (animal_index == 1) {
-		if (!animals[1].loadFromFile("../Data/Images/kenney_animalpackredux/PNG/Square/penguin.png"))
-		{
-			std::cout << "Error";
-		}
-	}
-	else if (animal_index == 2) {
-		if (!animals[2].loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/elephant.png"))
-		{
-			std::cout << "Error";
-		}
-	}
-	character->setTexture(animals[animal_index]);
-	return true;
-}
-
-bool Game::passportSprite(int passport_index)
-{
-	if (passport_index == 0) {
-		if (!passports[0].loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/moose passport.png")) 
-		{
-			std::cout << "Error";
-		}
-	}
-	else if (passport_index == 1) {
-		if (!passports[1].loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/penguin passport.png"))
-		{
-			std::cout << "Error";
-		}
-	}
-	else if (passport_index == 2) {
-		if (!passports[2].loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/elephant passport.png"))
-		{
-			std::cout << "Error";
-		}
-	}
-	passport->setTexture(passports[passport_index]);
-	
-	return true;
-}
+//bool Game::animalSprite(int animal_index)
+//{
+//	if (animal_index == 0) {
+//		if (!animals[0].loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/moose.png"))
+//		{
+//			std::cout << "Error";
+//		}
+//	}
+//	else if (animal_index == 1) {
+//		if (!animals[1].loadFromFile("../Data/Images/kenney_animalpackredux/PNG/Square/penguin.png"))
+//		{
+//			std::cout << "Error";
+//		}
+//	}
+//	else if (animal_index == 2) {
+//		if (!animals[2].loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/elephant.png"))
+//		{
+//			std::cout << "Error";
+//		}
+//	}
+//	character->setTexture(animals[animal_index]);
+//	return true;
+//}
+//
+//bool Game::passportSprite(int passport_index)
+//{
+//	if (passport_index == 0) {
+//		if (!passports[0].loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/moose passport.png")) 
+//		{
+//			std::cout << "Error";
+//		}
+//	}
+//	else if (passport_index == 1) {
+//		if (!passports[1].loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/penguin passport.png"))
+//		{
+//			std::cout << "Error";
+//		}
+//	}
+//	else if (passport_index == 2) {
+//		if (!passports[2].loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/elephant passport.png"))
+//		{
+//			std::cout << "Error";
+//		}
+//	}
+//	passport->setTexture(passports[passport_index]);
+//	
+//	return true;
+//}
 
 void Game::newAnimal()
 {
@@ -364,12 +464,11 @@ void Game::newAnimal()
 
 
 
-
-	animalSprite(animal_index_temp);
+	character->setTexture(*animals[animal_index_temp]);
 	character->setScale(1, 1);
 	character->setPosition(window.getSize().x / 12, window.getSize().y / 12);
-
-	passportSprite(passport_index_temp);
+	
+	passport->setTexture(*passports[passport_index_temp]);
 	passport->setScale(0.6,0.6);
 	passport->setPosition(200, 200);
 	accept_stamp_visible = false;
