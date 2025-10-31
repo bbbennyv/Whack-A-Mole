@@ -86,11 +86,6 @@ bool Game::init()
 
 
 
-
-
-	
-
-
 	for (int i = 0; i < 3; i++)
 	{
 
@@ -117,7 +112,6 @@ bool Game::init()
 				std::cout << "Error";
 			}
 		}
-
 	}
 
 	for (int i = 0; i < 3; i++) 
