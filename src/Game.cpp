@@ -333,6 +333,7 @@ void Game::keyPressed(sf::Event event)
 				in_menu = false;
 				score_text.setText("Score| " + std::to_string(score));
 				lives_text.setText("Lives| " + std::to_string(lives));
+				buttons_visible = false;
 			}
 			if (quit_text.getText().getString() == "<Quit>") 
 			{
