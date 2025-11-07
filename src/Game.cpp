@@ -33,7 +33,7 @@ bool Game::init()
 	score_text.setPosition(10, 10);
 	score_text.setColour(sf::Color::Blue);
 	score_text.init("Score| " +std::to_string(score), 40);
-	lives_text.init("Lives| 5", 40);
+	lives_text.init("Lives| 3", 40);
 	lives_text.setPosition(800, 10);
 	lives_text.setColour(sf::Color::Blue);
 
@@ -163,7 +163,7 @@ void Game::update(float dt)
 	{
 		return;
 	}
-	if (CollisionBoxChecker(*character, *passport) && stamped == true && dragged == NULL) 
+	if (CollisionBoxChecker(*character, *passport) && stamped == true && dragged == nullptr) 
 	{
 		if (won) 
 		{
@@ -230,16 +230,16 @@ void Game::render()
 		window.draw(timer_text.getText());
 		window.draw(*character);
 		window.draw(*passport);
-		if (buttons_visible == true) 
-		{
-			window.draw(accept_button);
-			window.draw(reject_button);
-		}
 		if (accept_stamp_visible == true) {
 			window.draw(accept_stamp);
 		}
 		if (reject_stamp_visible == true) {
 			window.draw(reject_stamp);
+		}
+		if (buttons_visible == true) 
+		{
+			window.draw(accept_button);
+			window.draw(reject_button);
 		}
 
 	}
@@ -305,6 +305,7 @@ void Game::mouseButtonPressed(sf::Event event)
 		sf::Vector2f clickf = static_cast<sf::Vector2f>(click);
 		if (passport->getGlobalBounds().contains(clickf)) 
 		{
+			drag_offset = clickf - passport.get()->getPosition();
 			dragged = passport.get();
 		}
 	}
@@ -339,6 +340,8 @@ void Game::keyPressed(sf::Event event)
 				score_text.setText("Score| " + std::to_string(score));
 				lives_text.setText("Lives| " + std::to_string(lives));
 				buttons_visible = false;
+				accept_stamp_visible = false;
+				reject_stamp_visible = false;
 			}
 			if (quit_text.getText().getString() == "<Quit>") 
 			{

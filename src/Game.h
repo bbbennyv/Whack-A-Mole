@@ -69,7 +69,7 @@ class Game
   bool in_menu = true;
 
   int score = 0;
-  int lives = 5; 
+  int lives = 3; 
   
   const float countdownTime = 31.0f;
 
