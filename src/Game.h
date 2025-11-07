@@ -56,13 +56,13 @@ class Game
 
 
   Text title_text;
-  Text play_text;
   Text score_text;
   Text lives_text;
   Text end_screen_text;
   Text timer_text;
   Text restart_text;
   Text quit_text;
+  Text play_text;
 
   sf::Vector2f drag_offset = sf::Vector2f(125.0f,150.f);
   

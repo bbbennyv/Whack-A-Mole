@@ -12,8 +12,7 @@ Game::Game(sf::RenderWindow& game_window)
 
 Game::~Game()
 {
-	//delete character;
-	//delete passport;
+
 
 }
 
@@ -23,13 +22,11 @@ bool Game::init()
 		std::cout << "NO BACKGROUND";
 	}
 	background.setTexture(background_texture);
-	title_text.init("WHACK A MOLEE", 20);
+	title_text.init("Critters || Crossing", 60);
 	title_text.setColour(sf::Color::Cyan);
 	title_text.setPosition(window.getSize().x / 2 - title_text.getText().getGlobalBounds().width / 2,
 		20);
-	play_text.init("Press Enter to Start",30);
-	play_text.setPosition(100, 200);
-	play_text.setColour(sf::Color::Cyan);
+	
 	score_text.setPosition(10, 10);
 	score_text.setColour(sf::Color::Blue);
 	score_text.init("Score| " +std::to_string(score), 40);
@@ -52,6 +49,9 @@ bool Game::init()
 	quit_text.setPosition(700, 500);
 	quit_text.setColour(sf::Color::White);
 
+	play_text.init("Play", 40);
+	play_text.setPosition(200, 500);
+	play_text.setColour(sf::Color::White);
 
 	if (!accept_button_texture.loadFromFile("../Data/Images/Critter Crossing Customs/Critter Crossing Customs/accept button.png")) 
 	{
@@ -80,13 +80,11 @@ bool Game::init()
 
 
 
-	//character = new sf::Sprite;
-	//passport = new sf::Sprite;
-
+	//initisilising the pntrs
 	character = std::make_unique<sf::Sprite>();
 	passport = std::make_unique<sf::Sprite>();
 
-
+	//push back the different animals and passports into the vector list
 	for (int i = 0; i < 3; i++)
 	{
 
@@ -148,7 +146,10 @@ bool Game::init()
 
 void Game::update(float dt)
 {
-	
+	if (in_menu) 
+	{
+		timer.restart();
+	}
 	if (reject_stamp_visible == true) {
 		reject_stamp.setPosition(passport->getGlobalBounds().left, passport->getPosition().y);
 
@@ -159,7 +160,7 @@ void Game::update(float dt)
 
 
 	dragSprite(dragged);
-	if(character == nullptr && passport == nullptr)
+	if(character == nullptr && passport == nullptr) // making sure the charcter and passport are never nullptr
 	{
 		return;
 	}
@@ -192,6 +193,8 @@ void Game::update(float dt)
 		is_dead = true;
 	}
 
+
+	// timer where the countdownTime is being subtracted from the elapsed to the timer is actually going down instead of up
 	float elapsed = timer.getElapsedTime().asSeconds();
 	float remaining = countdownTime - elapsed;
 	if (remaining < 0) {
@@ -220,6 +223,8 @@ void Game::render()
 		window.clear();
 		window.draw(title_text.getText());
 		window.draw(play_text.getText());
+		window.draw(quit_text.getText());
+
 	}
 	else
 	{
@@ -305,7 +310,7 @@ void Game::mouseButtonPressed(sf::Event event)
 		sf::Vector2f clickf = static_cast<sf::Vector2f>(click);
 		if (passport->getGlobalBounds().contains(clickf)) 
 		{
-			drag_offset = clickf - passport.get()->getPosition();
+			drag_offset = clickf - passport.get()->getPosition();//no mouse snap when moving the passport
 			dragged = passport.get();
 		}
 	}
@@ -318,18 +323,17 @@ void Game::mouseButtonPressed(sf::Event event)
 void Game::mouseButtonReleased(sf::Event event)
 {
 	dragged = nullptr;
-
-
 }
 
 void Game::keyPressed(sf::Event event)
 {
 	if (event.key.code == sf::Keyboard::Enter) {
+		
 		in_menu = false;
 		timer.restart();
 		if (is_dead == true) 
 		{
-			if (restart_text.getText().getString() == "<Restart>") 
+			if (restart_text.getText().getString() == "<Restart>") //reset logic
 			{
 				timer.restart();
 				is_dead = false;
@@ -368,7 +372,7 @@ void Game::keyPressed(sf::Event event)
 }
 
 
-bool Game::CollisionChecker(sf::Vector2i click, sf::Sprite sprite) 
+bool Game::CollisionChecker(sf::Vector2i click, sf::Sprite sprite) //collision checker with mouse and any sprite to interact with
 {
 	if (click.x > sprite.getGlobalBounds().left &&
 		click.x < sprite.getGlobalBounds().left + sprite.getGlobalBounds().width &&
@@ -382,7 +386,7 @@ bool Game::CollisionChecker(sf::Vector2i click, sf::Sprite sprite)
 }
 
 
-bool Game::CollisionBoxChecker(sf::Sprite sprite1, sf::Sprite sprite2)
+bool Game::CollisionBoxChecker(sf::Sprite sprite1, sf::Sprite sprite2) //collision checker with two sprites
 {
 	if (sprite1.getGlobalBounds().left > sprite2.getGlobalBounds().left  &&
 		sprite1.getGlobalBounds().left < sprite2.getGlobalBounds().left + sprite2.getGlobalBounds().width &&
@@ -405,8 +409,8 @@ void Game::newAnimal()
 	passport_accept = false;
 	passport_reject = false;
 
-	int animal_index_temp = rand() % 3;
-	int passport_index_temp = rand() % 3;
+	int animal_index_temp = rand() % 3; // random animal and passport
+	int passport_index_temp = rand() % 3; // chooses a random num between 0 and 3
 
 	if (animal_index_temp == passport_index_temp) 
 	{
@@ -420,7 +424,7 @@ void Game::newAnimal()
 
 
 
-	character->setTexture(*animals.at(animal_index_temp),true);
+	character->setTexture(*animals.at(animal_index_temp),true); // sets the character to the texture of the animal with the index randomly chosen from the vector list
 	character->setScale(1, 1);
 	character->setPosition(window.getSize().x / 12, window.getSize().y / 12);
 	
@@ -436,9 +440,9 @@ void Game::newAnimal()
 
 void Game::dragSprite(sf::Sprite* sprite)
 {
-	if (sprite != nullptr) 
+	if (sprite != nullptr) //this allows the player to only drag one sprite at a time
 	{
-		sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+		sf::Vector2i mouse_pos = sf::Mouse::getPosition(window); 
 		sf::Vector2f mouse_posf = static_cast<sf::Vector2f>(mouse_pos);
 
 		sf::Vector2f drag_position = mouse_posf - drag_offset;
