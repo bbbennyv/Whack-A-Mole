@@ -329,8 +329,6 @@ void Game::keyPressed(sf::Event event)
 {
 	if (event.key.code == sf::Keyboard::Enter) {
 		
-		in_menu = false;
-		timer.restart();
 		if (is_dead == true) 
 		{
 			if (restart_text.getText().getString() == "<Restart>") //reset logic
@@ -352,6 +350,20 @@ void Game::keyPressed(sf::Event event)
 				window.close();
 			}
 		}
+
+		if (in_menu) 
+		{
+			if (play_text.getText().getString() == "<Play>") 
+			{
+				timer.restart();
+				in_menu = false;
+			}
+			if (quit_text.getText().getString() == "<Quit>")
+			{
+				window.close();
+			}
+		}
+
 	}
 	if (is_dead == true) 
 	{
@@ -368,6 +380,22 @@ void Game::keyPressed(sf::Event event)
 		}
 		
 	}
+
+	if (in_menu) 
+	{
+		if (event.key.code == sf::Keyboard::Left)
+		{
+			play_text.setText("<Play>");
+			quit_text.setText("Quit");
+		}
+
+		if (event.key.code == sf::Keyboard::Right)
+		{
+			play_text.setText("Play");
+			quit_text.setText("<Quit>");
+		}
+	}
+
 
 }
 
