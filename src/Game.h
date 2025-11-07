@@ -21,7 +21,7 @@ class Game
   bool animalSprite(int animal_index);
   bool passportSprite(int passport_index);
   void newAnimal();
-  void dragSprite(sf::Sprite* sprite);
+  void dragSprite(sf::Sprite* dragged);
 
 
  private:
@@ -29,8 +29,12 @@ class Game
   sf::Sprite background;
   sf::Texture background_texture;
 
-  sf::Sprite* character;
-  sf::Sprite* passport;
+ /* sf::Sprite* character;
+  sf::Sprite* passport;*/
+
+  std::unique_ptr<sf::Sprite> character;
+  std::unique_ptr<sf::Sprite> passport;
+
   sf::Sprite accept_button;
   sf::Sprite reject_button;
   sf::Sprite accept_stamp;
@@ -38,8 +42,8 @@ class Game
 
   sf::Sprite* dragged = nullptr;
   
-  /*sf::Texture* animals = new sf::Texture[3];
-  sf::Texture* passports = new sf::Texture[3];*/
+  /*std::unique_ptr<sf::Sprite> dragged = nullptr;*/
+
   sf::Texture accept_button_texture;
   sf::Texture reject_button_texture;
   sf::Texture accept_stamp_texture;
